@@ -1,0 +1,86 @@
+{
+      "required": {
+            "gatewayId": "1235",
+            "gatewayPid": "1234",
+            "issued": "2021-06-17T15:17:27.327Z",
+            "modified": "2023-03-23T16:49:34.606Z",
+            "revisions": [
+                  {
+                        "version": "2.0.0",
+                        "url": "https://api.service.nhs.uk/health-research-data-catalogue/datasetrevisions/449f81a1-9ab4-449d-ba26-5829a855379e"
+                  }
+            ]
+      },
+      "summary": {
+            "abstract": "The Medicines Dispensed in Primary Care (NHSBSA) data comprises prescriptions for medicines that are dispensed or supplied by community pharmacists, appliance contractors and dispensing doctors in England.",
+            "contactPoint": "england.contactus@nhs.net",
+            "keywords": "DIGITRIALS, Prescribing, Medicines, Dispensing, NCS, National Core Study, Covid",
+            "controlledKeywords": "",
+            "description": "Since July 2020 NHS Digital has established a collection of data from electronic and paper prescriptions submitted to the NHSBSA for reimbursement each month.\n\nThe data comprises prescriptions for medicines that are dispensed or supplied by community pharmacists, appliance contractors and dispensing doctors in England.\n\nThe data also includes:\n\nprescriptions submitted by prescribing doctors, for medicines personally administered in England prescriptions written in England and dispensed outside of England prescriptions written in Wales, Scotland, Northern Ireland, the Isle of Man, Jersey and Guernsey but dispensed in England\n\nData includes prescriptions issued by prescribers in:\n\ngeneral practice community clinics hospital clinics dentists community nursing services.\n\nThere are around 90 to 100 million rows of patient-level data in this collection per month. Each row represents each medicine or appliance on a prescription and includes personal data (for example NHS number) and special category data (data concerning health).\n\nTimescales for dissemination of agreed data can be found under 'Our Service Levels' at the following link: [https://digital.nhs.uk/services/data-access-request-service-dars/data-access-request-service-dars-process](https://digital.nhs.uk/services/data-access-request-service-dars/data-access-request-service-dars-process) [Standard response](https://web.www.healthdatagateway.org/dataset/f201b68f-d995-4a70-a9ee-aa3510232777)",
+            "doiName": "10.7189/jogh.13.01003",
+            "shortTitle": "Medicines dispensed in Primary Care (NHSBSA data)",
+            "title": "The Medicines Dispensed in Primary Care (NHSBSA) data comprises prescriptions for medicines that are dispensed or supplied by community pharmacists, appliance contractors and dispensing doctors in England."
+      },
+      "publisher": {
+            "publisherName": "NHS ENGLAND",
+            "publisherGatewayId": "5f86cd34980f41c6f02261f4"
+      },
+      "coverage": {
+            "pathway": "Medicines in community settings",
+            "physicalSampleAvailability": "NOT AVAILABLE",
+            "spatial": "https://www.geonames.org/6269131/england.html",
+            "followup": "UNKNOWN",
+            "typicalAgeRange": "0-150"
+      },
+      "provenance": {
+            "origin": {
+                  "purpose": "ADMINISTRATIVE,CARE,OTHER",
+                  "source": "PAPER BASED,OTHER"
+            },
+            "temporal": {
+                  "endDate": "2015-04-01",
+                  "startDate": "2015-04-01",
+                  "timeLag": "1-2 MONTHS",
+                  "accrualPeriodicity": "MONTHLY"
+            }
+      },
+      "accessibility": {
+            "access": {
+                  "deliveryLeadTime": "OTHER",
+                  "jurisdiction": "GB-ENG",
+                  "dataController": "NHS England (NHSE)",
+                  "dataProcessor": "NHS England (NHSE)",
+                  "accessRights": "https://digital.nhs.uk/services/data-access-request-service-dars",
+                  "accessService": "Once your DARS application has been approved, data will be made available either by secure file transfer or through the Data Access Environment (DAE). \nSecure file transfer: https://digital.nhs.uk/services/transfer-data-securely \nDAE: https://digital.nhs.uk/services/data-access-environment-dae",
+                  "accessRequestCost": "https://digital.nhs.uk/services/data-access-request-service-dars/data-access-request-service-dars-charges"
+            },
+            "usage": {
+                  "dataUseLimitation": "No Restriction",
+                  "dataUseRequirement": "INSTITUTION SPECIFIC RESTRICTIONS,PROJECT SPECIFIC RESTRICTIONS,TIME LIMIT ON USE",
+                  "resourceCreator": "NHS ENGLAND"
+            },
+            "formatAndStandards": {
+                  "vocabularyEncodingSchemes": "DM+D,ODS",
+                  "conformsTo": "LOCAL",
+                  "languages": "en",
+                  "formats": "CSV,Text"
+            }
+      },
+      "linkage": {
+            "associatedMedia": "https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/medicines-dispensed-in-primary-care-nhsbsa-data",
+            "isReferenceIn": "2135",
+            "tools": "https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/medicines-dispensed-in-primary-care-nhsbsa-data#reference-data",
+            "datasetLinkage": {
+                  "isDerivedFrom": "Data will be minimised as appropriate relative to the data access application",
+                  "isPartOf": "NOT APPLICABLE"
+            }
+      },
+      "observations": [
+            {
+                  "observedNode": "PERSONS",
+                  "measuredValue": 18824070,
+                  "observationDate": "2020-10-31",
+                  "measuredProperty": "Count"
+            }
+      ]
+}
