@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 class ModelMapper:
 
     def find_connectors(self,data,connectors,origin,parent=None):
-        exp = re.compile("gdmv1\.[^/\s]+")
         if isinstance(data,dict):
             for k,v in data.items():
                 name = f"{parent}.{k}"
@@ -19,8 +18,13 @@ class ModelMapper:
             for v in data:
                 self.find_connectors(v,connectors,origin,parent=parent)
         elif isinstance(data,str) and origin in data:
-
             for x in re.findall(f"{origin}\.[^/\s]+", data):
+                connectors.append({
+                    'from':x,
+                    'to':parent
+                })
+        elif isinstance(data,str) and 'extra' in data:
+            for x in re.findall(f"extra\.[^/\s]+", data):
                 connectors.append({
                     'from':x,
                     'to':parent
@@ -84,17 +88,22 @@ class ModelMapper:
                                      'metadata':input_metadata,
                                      'extra':extra
                                  })
+
+        
         if response.status_code != 200:
             print (json.dumps(response.json(),indent=6))
             raise Exception('bad')
         return response.json()
     
-    def get_nodes_and_connector(self,input_metadata,output_metadata,input_name,output_name):
-        inodes = [] 
+    def get_nodes_and_connector(self,input_metadata,output_metadata,input_name,output_name,extra):
+        inodes = []
         self.find_nodes(input_metadata,inodes,parent=input_name)
+        self.find_nodes(extra,inodes,parent='extra')
+
         onodes = [] 
         self.find_nodes(output_metadata,onodes,parent=output_name)
         connectors = []
+
         self.find_connectors(output_metadata,connectors,input_name,parent=output_name) 
         
         return inodes,onodes,connectors
@@ -102,6 +111,8 @@ class ModelMapper:
     def get_nx_graph(self,icolor='mediumvioletred',ocolor='lightblue'):
         nx_graph = nx.DiGraph()
         nx_graph.add_node(self.input_name,label=self.input_name,color=icolor)
+        nx_graph.add_node('extra',label='extra',color=icolor)
+
         for node in self.inodes:
             nx_graph.add_node(node['name'],label=node['label'],color=icolor)
             nx_graph.add_edge(node['parent'],node['name'],weight=5,color=icolor,arrow=False)
@@ -131,6 +142,7 @@ class ModelMapper:
         
         dot = Digraph(strict=True,format='png')
         dot.attr(rankdir=self.rankdir)
+
         
         all_mapped = [
             item[key]
@@ -149,6 +161,7 @@ class ModelMapper:
             cdot.attr(penwidth='0',margin='200')
             
             idot.node(input_name,label=input_name,style='filled',color='white')
+            idot.node('extra',label='extra',style='filled',color='white')
             
             for node in inodes:
                 idot.node(node['name'],label=node['label'],style='filled',color='white')
@@ -206,7 +219,6 @@ class ModelMapper:
         self.render = render
         self.extra = extra
         
-
         self.output_metadata = self.get_output_metadata(
             self.input_metadata,
             self.input_name,
@@ -223,10 +235,15 @@ class ModelMapper:
         self.input_metadata_with_keys = self.update_values_with_keys(self.input_metadata,
                                                                      self.input_data_mapper,
                                                                      self.input_name)
-        
+
+        self.extra_with_keys = self.update_values_with_keys(self.extra,
+                                                            self.input_data_mapper,
+                                                            'extra')
+
         self.output_metadata_with_input_keys = self.get_output_metadata(self.input_metadata_with_keys,
                                                                         self.input_name,
-                                                                        self.output_name)
+                                                                        self.output_name,
+                                                                        extra=self.extra_with_keys)
         
         
         
@@ -234,7 +251,8 @@ class ModelMapper:
             self.input_metadata_with_keys,
             self.output_metadata_with_input_keys,
             self.input_name,
-            self.output_name)
+            self.output_name,
+            self.extra)
         
         
         self.all_out_nodes = []
@@ -266,7 +284,7 @@ class ModelMapper:
 
 if __name__ == "__main__":
 
-    data_example = {
+    metadata_example = {
         "identifier": "449f81a1-9ab4-449d-ba26-5829a855379e",
         "version": "2.0.0",
         "revisions": [
@@ -288,8 +306,8 @@ if __name__ == "__main__":
                 "logo": "1",
                 "description": "blahh",
                 "accessRights": ["a"],
-                "deliveryLeadTime": "d",
-                "accessService": "b",
+                "deliveryLeadTime": "OTHER",
+                "accessService": "basfasgaskogas",
                 "accessRequestCost": "free",
                 "dataUseLimitation": ['as'],
                 "dataUseRequirements": ["das"]
@@ -299,7 +317,7 @@ if __name__ == "__main__":
                 "DIGITRIALS, Prescribing, Medicines, Dispensing, NCS, National Core Study, Covid"
             ],
             "alternateIdentifiers": ["1234"],
-            "doiName": "10.fasfs/pf"
+            "doiName": "10.7189/jogh.13.01003"
         },
         "documentation": {
             "description": "Since July 2020 NHS Digital has established a collection of data from electronic and paper prescriptions submitted to the NHSBSA for reimbursement each month.\n\nThe data comprises prescriptions for medicines that are dispensed or supplied by community pharmacists, appliance contractors and dispensing doctors in England.\n\nThe data also includes:\n\nprescriptions submitted by prescribing doctors, for medicines personally administered in England prescriptions written in England and dispensed outside of England prescriptions written in Wales, Scotland, Northern Ireland, the Isle of Man, Jersey and Guernsey but dispensed in England\n\nData includes prescriptions issued by prescribers in:\n\ngeneral practice community clinics hospital clinics dentists community nursing services.\n\nThere are around 90 to 100 million rows of patient-level data in this collection per month. Each row represents each medicine or appliance on a prescription and includes personal data (for example NHS number) and special category data (data concerning health).\n\nTimescales for dissemination of agreed data can be found under 'Our Service Levels' at the following link: [https://digital.nhs.uk/services/data-access-request-service-dars/data-access-request-service-dars-process](https://digital.nhs.uk/services/data-access-request-service-dars/data-access-request-service-dars-process) [Standard response](https://web.www.healthdatagateway.org/dataset/f201b68f-d995-4a70-a9ee-aa3510232777)",
@@ -429,7 +447,30 @@ if __name__ == "__main__":
     #mapper = ModelMapper(data_example,'hdrukv211','gdmv1',extra=extra,render=True)
     #mapper.get_diagram()
 
-    data_example = json.load(open("example_gdm1.json"))
-    mapper = ModelMapper(data_example,'gdmv1','schemaorg',render=False)
-    #mapper.get_diagram()
-    mapper.get_network()
+    #data_example = json.load(open("example_gdm1.json"))
+
+    extra = {
+        "structuralMetadata": [
+            {
+                "tableName": "All Available Fields",
+                "tableDescription": "fuck off",
+                "columnName": "All Available Fields",
+                "columnDescription": "All Available Fields",
+                "dataType": "String",
+                "sensitive": False
+            }
+        ]
+    }
+
+    with open("example_datasetv2_smd.json","w") as f:
+        data = {'metadata':metadata_example,'extra':extra}
+        json.dump(data,f,indent=6)
+    
+    #data_example = json.load(open("example_mongodb.json"))
+
+    #print (data_example["metadata"].keys())
+    
+    #mapper = ModelMapper(metadata_example,'datasetv2','hdrukv211',extra=extra,render=True)
+    mapper = ModelMapper(metadata_example,'datasetv2','hdrukv211',extra=extra,render=True)
+    mapper.get_diagram()
+    #mapper.get_network()
